@@ -1,2 +1,4 @@
-width = 400 #multiple of 10
-height = 600 #multiple of 10
+width = 400 #multiple of size
+height = 600 #multiple of size
+
+size = 20
