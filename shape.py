@@ -1,6 +1,7 @@
 from config import width, height, size
 import pygame
 import math
+from random import randint
 
 middle = width/2
 class Shape:
@@ -41,7 +42,7 @@ class Shape:
                         [middle, size]
             ]
         if self.type == 'Z':
-            self.col = (0,255,0)
+            self.col = (255,0,255)
             self.spots = [
                         [middle-size*2, 0],
                         [middle-size, 0],
@@ -49,7 +50,7 @@ class Shape:
                         [middle, size]
             ]
         if self.type == 'backZ':
-            self.col = (0,100,255)
+            self.col = (100,220,85)
             self.spots = [
                         [middle, 0],
                         [middle-size, 0],
@@ -78,6 +79,8 @@ class Shape:
             for i in self.spots:
                 i[0] -= width/2+size*3
                 i[1] -= height/3
+                i[0] = int(i[0])
+                i[1] = int(i[1])
     def check(self, spots, dir):
         for i in self.spots:
             if dir == 'down': #checks if it is currently hit, not future

@@ -1,7 +1,7 @@
 # defaults: width - 400 height - 600 size - 20
-width = 400 #multiple of size
-height = 600 #multiple of size
+width = 420 #multiple of size
+height = 595 #multiple of size
 
-size = 20
+size = 35
 
 columns = width/size
