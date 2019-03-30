@@ -96,7 +96,6 @@ def main(): #return true restarts it, return false to exit
                     shapeDelayMax -= .1
 
                 if shape.check(spots, 'down'):
-                    print(shape.spots)
                     shape.move('back')
                     appendSpots(spots, shape, colors)
                     shape = nextShape
@@ -159,10 +158,12 @@ def main(): #return true restarts it, return false to exit
                         else:
                             x += 1
                 #move everything down
+                removes.sort()
+                print(removes)
                 for x in removes:
                     for i in spots:
                         if i[1] < x:
-                            i[1] += size*removeAmt
+                            i[1] += size
                 drawGame(shape, spots, colors, score, nextShape)
         elif gameScreen == 'end':
             for event in pygame.event.get():
@@ -192,7 +193,7 @@ def appendSpots(spots, shape, colors):
 
 def randShape():
     types = ['L', 'long', 'backL', 'Z', 'backZ', 'square', 'T']
-  #  return Shape('long')
+   # return Shape('long')
     return Shape(types[randint(0,len(types)-1)])
 
 while main():
