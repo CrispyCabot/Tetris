@@ -83,7 +83,7 @@ class Shape:
                 i[1] = int(i[1])
     def check(self, spots, dir):
         for i in self.spots:
-            if dir == 'down': #checks if it is currently hit, not future
+            if dir == 'down': #checks if it is currently hit
                 if i[1] >= height:
                     return True
                 if [i[0], i[1]] in spots:
@@ -111,16 +111,27 @@ class Shape:
             for i in self.spots:
                 i[0] -= size
         if dir == 'up':
-            mid = int(len(self.spots)/2)
+            mid = roundd(len(self.spots)/2)
             mid = self.spots[mid]
             for i in self.spots:
                 i[0], i[1] = rotate((mid[0], mid[1]), (i[0], i[1]), math.pi/2)
+                i[0] = round(i[0])
+                i[1] = round(i[1])
         if dir == 'down':
             for i in self.spots:
                 i[1] += size
         if dir == 'back':
             for i in self.spots:
                 i[1] -= size
+
+def roundd(num): #round a number with .5 going down
+    dec = round(num)-num
+    if dec < 0:
+        return round(num)
+    if dec > .5:
+        return round(num)
+    else:
+        return int(num)
 
 def rotate(origin, point, angle):
     """

@@ -16,9 +16,6 @@ smallFont = pygame.font.SysFont('', 24)
 
 clock = pygame.time.Clock()
 
-def initialValues():
-    pass
-
 def drawGame(shape, spots, colors, score, nextShape):
     win.fill((255,255,255))
     for i in spots:
@@ -36,10 +33,8 @@ def drawGame(shape, spots, colors, score, nextShape):
     nextShape.draw(win)
     pygame.display.update()
 
-def main(): #return true restarts it
-    global end, endStuff
+def main(): #return true restarts it, return false to exit
     gameScreen = 'game'
-    endStuff = True
     playing = True
     paused = False
     shape = randShape()
@@ -65,23 +60,23 @@ def main(): #return true restarts it
             if paused:
                 for event in pygame.event.get():
                     if event.type == QUIT:
-                        playing = False
+                        return False
                     if event.type == pygame.KEYDOWN:
                         paused = False
                 win.fill((0,0,0))
                 text = font.render('Paused', True, (255,255,255))
                 loc = text.get_rect()
-                loc.center = (width/2, height/2)
+                loc.center = ((width+400)/2, height/2)
                 win.blit(text, loc)
                 text = smallFont.render('Press any key to continue', True, (255,255,255))
                 loc = text.get_rect()
-                loc.center = (width/2, height/2+100)
+                loc.center = ((width+400)/2, height/2+100)
                 win.blit(text, loc)
                 pygame.display.update()
             else:
                 for event in pygame.event.get():
                     if event.type == QUIT:
-                        playing = False
+                        return False
                     if event.type == pygame.KEYDOWN:
                         if event.key == 273 and shape.type != 'square': #Up arrow
                             shape.move('up')
@@ -101,6 +96,7 @@ def main(): #return true restarts it
                     shapeDelayMax -= .1
 
                 if shape.check(spots, 'down'):
+                    print(shape.spots)
                     shape.move('back')
                     appendSpots(spots, shape, colors)
                     shape = nextShape
@@ -111,7 +107,7 @@ def main(): #return true restarts it
                         gameScreen = 'end'
                 keys = pygame.key.get_pressed()
                 if keys[K_q] or keys[K_ESCAPE]:
-                    playing = False
+                    return False
                 if keys[K_p]:
                     paused = True
                 if keys[K_r]:
@@ -171,7 +167,7 @@ def main(): #return true restarts it
         elif gameScreen == 'end':
             for event in pygame.event.get():
                 if event.type == QUIT:
-                    playing = False
+                    return False
             clock.tick(30)
             text = font.render('Game Over', True, (255,0,0), (0,0,0))
             drawEnd()
@@ -180,7 +176,7 @@ def main(): #return true restarts it
                 gameScreen = 'game'
                 return True
             if keys[K_q] or keys[K_ESCAPE]:
-                playing = False
+                return False
 
 def drawEnd():
     text = font.render("Game Over", True, (255,0,0), (0,0,0))
@@ -196,7 +192,7 @@ def appendSpots(spots, shape, colors):
 
 def randShape():
     types = ['L', 'long', 'backL', 'Z', 'backZ', 'square', 'T']
-    #return Shape('long')
+  #  return Shape('long')
     return Shape(types[randint(0,len(types)-1)])
 
 while main():
