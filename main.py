@@ -51,8 +51,27 @@ def main(): #return true restarts it, return false to exit
     loc.bottomleft = (0,height)
     homeButtons.append(Button(loc, 'Quit', (255,100,100), (255,255,255), 24))
 
+    settingsBtns = []
+    loc = pygame.Rect(10,10,200,100)
+    loc.center = ((width+400)/2, 100)
+    settingsBtns.append(Button(loc, 'Random Colors', (255,20,20), (0,0,0), 26))
+    loc = pygame.Rect(10,10,100,50)
+    loc.bottomleft = (0,height)
+    settingsBtns.append(Button(loc, 'Back', (255,200,100), (0,0,0), 20))
+    loc = pygame.Rect(10,10,200,100)
+    loc.center = ((width+400)/2, 200)
+    settingsBtns.append(Button(loc, 'Crazy Shapes', (255,20,20), (0,0,0), 26))
+
+    settings = {
+                'randColor': False,
+                'randShape': False
+    }
+
+    clickDelay = 0
+
     tStart = time.time()
     while playing:
+        clickDelay += 1
         if gameScreen == 'game':
             clock.tick(60)
 
@@ -119,7 +138,7 @@ def main(): #return true restarts it, return false to exit
                         appendSpots(spots, shape, colors)
                         shape = nextShape
                         shape.side(False)
-                        nextShape = randShape()
+                        nextShape = randShape(settings)
                         nextShape.side(True)
                         if shape.check(spots, 'down'):
                             gameScreen = 'gameOver'
@@ -162,7 +181,7 @@ def main(): #return true restarts it, return false to exit
                     for i in spots:
                         if i[1] < x:
                             i[1] += size
-                drawGame(shape, spots, colors, score, nextShape)
+                drawGame(settings, shape, spots, colors, score, nextShape)
         elif gameScreen == 'home':
             for event in pygame.event.get():
                 if event.type == QUIT:
@@ -174,11 +193,12 @@ def main(): #return true restarts it, return false to exit
             win.blit(logo, loc)
             for i in homeButtons:
                 i.update(win)
-            if homeButtons[0].clicked(): #play
+            if homeButtons[0].clicked() and clickDelay > 10: #play
                 gameScreen = 'game'
-            if homeButtons[1].clicked(): #settings
-                pass
-            if homeButtons[2].clicked(): #quit
+            if homeButtons[1].clicked() and clickDelay > 10: #settings
+                gameScreen = 'settings'
+            if homeButtons[2].clicked() and clickDelay > 10: #quit
+                print('quit clicked')
                 return False
             pygame.display.update()
         elif gameScreen == 'gameOver':
@@ -201,9 +221,36 @@ def main(): #return true restarts it, return false to exit
             if homeButtons[0].clicked(): #play
                 return True
             if homeButtons[1].clicked(): #settings
-                pass
+                gameScreen = 'settings'
             if homeButtons[2].clicked(): #quit
                 return False
+        elif gameScreen == 'settings':
+            for event in pygame.event.get():
+                if event.type == QUIT:
+                    return False
+            clock.tick(30)
+            win.fill((0,0,0))
+            for i in settingsBtns:
+                i.update(win)
+            if settingsBtns[0].clicked() and clickDelay > 10: #rand color
+                clickDelay = 0
+                settings['randColor'] = not(settings['randColor'])
+                if settings['randColor']:
+                    settingsBtns[0].col1 = (20,255,20)
+                else:
+                    settingsBtns[0].col1 = (255,20,20)
+            if settingsBtns[1].clicked() and clickDelay > 10: #back
+                gameScreen = 'home'
+                clickDelay = 0
+            if settingsBtns[2].clicked() and clickDelay > 10: #rand shape
+                clickDelay = 0
+                settings['randShape'] = not(settings['randShape'])
+                shape = randShape(settings)
+                if settings['randShape']:
+                    settingsBtns[2].col1 = (20,255,20)
+                else:
+                    settingsBtns[2].col1 = (255,20,20)
+            pygame.display.update()
 def drawEnd():
     text = font.render("Game Over", True, (255,0,0), (0,0,0))
     loc = text.get_rect()
@@ -211,13 +258,22 @@ def drawEnd():
     win.blit(text, loc)
     pygame.display.update()
 
-def drawGame(shape, spots, colors, score, nextShape):
+def drawGame(settings, shape, spots, colors, score, nextShape):
     win.fill((255,255,255))
-    for i in spots:
-        color = colors[spots.index(i)]
-        pygame.draw.rect(win, color, pygame.Rect(i[0], i[1], size, size))
-        pygame.draw.rect(win, (0,0,0), pygame.Rect(i[0], i[1], size, size), 1)
-    shape.draw(win)
+    if settings['randColor']:
+        for i in spots:
+            color = (randint(0,255), randint(0,255), randint(0,255))
+            pygame.draw.rect(win, color, pygame.Rect(i[0], i[1], size, size))
+            pygame.draw.rect(win, (0,0,0), pygame.Rect(i[0], i[1], size, size), 1)
+        shape.col = (randint(0,255), randint(0,255), randint(0,255))
+        nextShape.col = (randint(0,255), randint(0,255), randint(0,255))
+        shape.draw(win)
+    else:
+        for i in spots:
+            color = colors[spots.index(i)]
+            pygame.draw.rect(win, color, pygame.Rect(i[0], i[1], size, size))
+            pygame.draw.rect(win, (0,0,0), pygame.Rect(i[0], i[1], size, size), 1)
+        shape.draw(win)
 
     #Sidebar
     pygame.draw.rect(win, (0,0,0), pygame.Rect(width, 0, 400, height))
@@ -233,9 +289,13 @@ def appendSpots(spots, shape, colors):
         spots.append([int(i[0]), int(i[1])])
         colors.append(shape.col)
 
-def randShape():
+def randShape(sets={}):
     types = ['L', 'long', 'backL', 'Z', 'backZ', 'square', 'T']
-   # return Shape('long')
+    try:
+        if sets['randShape']:
+            return Shape('rand')
+    except:
+        pass
     return Shape(types[randint(0,len(types)-1)])
 
 while main():

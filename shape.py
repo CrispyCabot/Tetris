@@ -3,12 +3,31 @@ import pygame
 import math
 from random import randint
 
+def dist(p1, p2):
+    return math.sqrt((p2[0]-p1[0])**2+(p2[1]-p1[1])**2)
+
 middle = width/2
 class Shape:
     def __init__(self, typ):
         self.type = typ
         self.spots = []
         self.col = (0,0,0)
+        if self.type == 'rand':
+            self.col = (randint(0,255), randint(0,255), randint(0,255))
+            self.spots = [[middle,0]]
+            lengt = randint(2,8)
+            while len(self.spots) < lengt:
+                p = (middle+(randint(-5,5))*size,randint(0,4)*size)
+                for i in self.spots:
+                    if dist(p, i) <= size:
+                        self.spots.append([p[0], p[1]])
+                        break
+                #remove duplicates
+                for i in self.spots:
+                    newList = self.spots.copy()
+                    newList.remove(i)
+                    if i in newList:
+                        self.spots.remove(i)
         if self.type == 'long':
             self.col = (255,255,0)
             self.spots = [
