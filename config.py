@@ -1,4 +1,5 @@
-# defaults: width - 400 height - 600 size - 20
+# defaults: width - 420 height - 600 size - 30
+# small: 
 import os
 width = 420 #multiple of size
 height = 600 #multiple of size

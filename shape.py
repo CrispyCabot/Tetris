@@ -7,6 +7,8 @@ def dist(p1, p2):
     return math.sqrt((p2[0]-p1[0])**2+(p2[1]-p1[1])**2)
 
 middle = width/2
+if size == 20:
+    middle = 200
 class Shape:
     def __init__(self, typ):
         self.type = typ
@@ -15,7 +17,7 @@ class Shape:
         if self.type == 'rand':
             self.col = (randint(0,255), randint(0,255), randint(0,255))
             self.spots = [[middle,0]]
-            lengt = randint(2,8)
+            lengt = randint(2,10)
             while len(self.spots) < lengt:
                 p = (middle+(randint(-5,5))*size,randint(0,4)*size)
                 for i in self.spots:
