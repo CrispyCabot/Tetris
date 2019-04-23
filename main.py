@@ -24,7 +24,8 @@ clock = pygame.time.Clock()
 settings = {
         'randColor': False,
         'randShape': False,
-        'screenSize': ''
+        'screenSize': '',
+        'maxSize': 10
     }
 
 screenOptions = {
@@ -88,8 +89,11 @@ def main(): #return true restarts it, return false to exit
     loc.center = ((width+400)/2, 200)
     settingsBtns.append(Button(loc, 'Crazy Shapes', (255,20,20), (0,0,0), 26))
     loc = pygame.Rect(10,10,200,100)
+    loc.center = ((width+400)/2, 300)
+    settingsBtns.append(Button(loc, 'Max Shape Size: '+str(settings['maxSize']), (100,100,255), (255,255,255), 22))
+    loc = pygame.Rect(10,10,200,100)
     loc.center == ((width+400)/2, 400)
-    settingsBtns.append(Button(loc, 'Screen Size: '+settings['screenSize'], (100,100,100), (0,0,0), 26))
+    #settingsBtns.append(Button(loc, 'Screen Size: '+settings['screenSize'], (100,100,100), (0,0,0), 26))
     if settings['randShape']:
         settingsBtns[2].col1 = (20,255,20)
     if settings['randColor']:
@@ -284,32 +288,12 @@ def main(): #return true restarts it, return false to exit
                     settingsBtns[2].col1 = (20,255,20)
                 else:
                     settingsBtns[2].col1 = (255,20,20)
-            '''
-            if settingsBtns[3].clicked() and clickDelay >10: #screen size
+            if settingsBtns[3].clicked() and clickDelay > 10: #max shape size
                 clickDelay = 0
-                curr = settings['screenSize']
-                if curr == 'small':
-                    settings['screenSize'] = 'medium'
-                if curr == 'medium':
-                    settings['screenSize'] = 'large'
-                if curr == 'large':
-                    settings['screenSize'] = 'small'
-                settingsBtns[3].text = 'Screen Size: '+settings['screenSize']
-                newSize = settings['screenSize']
-                if newSize == 'small':
-                    width = 400
-                    height = 600
-                    size = 40
-                elif newSize == 'medium':
-                    width = 420
-                    height = 600
-                    size = 30
-                elif newSize == 'large':
-                    width = 420
-                    height = 600
-                    size = 20
-                win = pygame.display.set_mode((width+400, height), pygame.RESIZABLE)
-            '''
+                settings['maxSize'] += 1
+                if settings['maxSize'] > 15:
+                    settings['maxSize'] = 4
+                settingsBtns[3].text = 'Max Shape Size: '+str(settings['maxSize'])
             pygame.display.update()
 
 def getScreenSize():
@@ -368,10 +352,10 @@ def randShape(sets={}):
     types = ['L', 'long', 'backL', 'Z', 'backZ', 'square', 'T']
     try:
         if sets['randShape']:
-            return Shape('rand')
+            return Shape('rand', sets)
     except:
-        pass
-    return Shape(types[randint(0,len(types)-1)])
+        print('error in rand shape')
+    return Shape(types[randint(0,len(types)-1)], sets)
 
 while main():
     main()

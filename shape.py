@@ -10,14 +10,14 @@ middle = width/2
 if size == 20:
     middle = 200
 class Shape:
-    def __init__(self, typ):
+    def __init__(self, typ, settings):
         self.type = typ
         self.spots = []
         self.col = (0,0,0)
         if self.type == 'rand':
             self.col = (randint(0,255), randint(0,255), randint(0,255))
             self.spots = [[middle,0]]
-            lengt = randint(2,10)
+            lengt = randint(1,settings['maxSize'])
             while len(self.spots) < lengt:
                 p = (middle+(randint(-5,5))*size,randint(0,4)*size)
                 for i in self.spots:
